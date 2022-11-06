@@ -67,7 +67,7 @@ class Interpreter:
         self.script = file
         stack = self.init_stacks()
         cmds = self.get_commands()
-        while True:
+        while self.ip < len(cmds):
             op = cmds[self.ip]
             match(op[:2]) :
                 case '00': # Mark a new label
@@ -120,20 +120,18 @@ class Interpreter:
                 case '12': # Pop value from specified stack and print to stdout
                     if stack[s2i(op[2:4])].isEmpty():
                         raise Exception("Stack underflow detected!")
-                    value = stack[s2i(op[2:4])].pop()
                     print(f"POP(STACK[{op[2:4]}]) AND PRINT VALUE TO STDOUT")
-                    print(f"POPPED VALUE: {value}")
+                    print(f"POPPED VALUE: {chr(s2i(stack[s2i(op[2:4])].pop()))}")
                 case '13': # Pop value from specified stack print corresponding unicode char to stdout
                     if stack[s2i(op[2:4])].isEmpty():
                         raise Exception("Stack underflow detected!")
-                    value = stack[s2i(op[2:4])].pop()
                     print(f"POP(STACK[{op[2:4]}]) AND PRINT CHARACTER TO STDOUT")
-                    print(f"POPPED VALUE: {chr(ord(value))}")
+                    print(f"POPPED VALUE: {chr(s2i(stack[s2i(op[2:4])].pop()))}")
                 case '14': # Pop values from specified stack until stack is empty and print to stdout
                     if not stack[s2i(op[2:4])].isEmpty():
                         print(f"WHILE STACK[{op[2:4]}] IS NOT EMPTY: POP(STACK[{op[2:4]}]) AND PRINT CHARS TO STDOUT")
                         while not stack[s2i(op[2:4])].isEmpty():
-                            print(f"{chr(ord(stack[s2i(op[2:4])].pop()))}", end="")
+                            print(f"{chr(s2i(stack[s2i(op[2:4])].pop()))}", end="")
                 case '20': # Write 4 digits to register
                     self.reg = s2i(op[2:])
                     print(f"REG = {self.reg}")
@@ -240,9 +238,9 @@ class Interpreter:
                     self.reg = len(stack[s2i(op[2:4])])
                 case _:
                     print("Invalid opcode")
-            self.ip += 1
+            if self.ip != len(cmds):
+                self.ip += 1
 
 if __name__ == '__main__':
     init = Interpreter()
-    # Takes a file as input
     init.run('crackme.hspal')
