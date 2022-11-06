@@ -243,4 +243,5 @@ class Interpreter:
 
 if __name__ == '__main__':
     init = Interpreter()
+    # Takes random file that has valid HSPAL commands
     init.run('crackme.hspal')
