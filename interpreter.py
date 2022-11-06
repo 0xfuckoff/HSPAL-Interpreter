@@ -244,4 +244,5 @@ class Interpreter:
 
 if __name__ == '__main__':
     init = Interpreter()
+    # Takes a file as input
     init.run('crackme.hspal')
